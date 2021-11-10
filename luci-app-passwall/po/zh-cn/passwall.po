@@ -71,7 +71,7 @@ msgid "Rule Manage"
 msgstr "规则管理"
 
 msgid "Rule List Manage"
-msgstr "直连/代理名单管理"
+msgstr "直连/代理/局域网/hosts名单管理"
 
 msgid "Access control"
 msgstr "访问控制"
@@ -93,6 +93,9 @@ msgstr "谷歌连接"
 
 msgid "GitHub Connection"
 msgstr "GitHub连接"
+
+msgid "Instagram Connection"
+msgstr "Instagram连接"
 
 msgid "Node Check"
 msgstr "节点检测"
@@ -130,9 +133,6 @@ msgstr "0为不使用"
 msgid "Same as the tcp node"
 msgstr "与TCP节点相同"
 
-msgid "New process"
-msgstr "另开进程"
-
 msgid "Current node: %s"
 msgstr "当前节点：%s"
 
@@ -141,12 +141,6 @@ msgstr "用于代理特定的列表。"
 
 msgid "For proxy game network, DNS hijack etc."
 msgstr "用于代理游戏或DNS劫持等..."
-
-msgid "The selected server will not use Kcptun."
-msgstr "选中的服务器不会使用Kcptun。"
-
-msgid "The client can use the router's Socks Servie."
-msgstr "客户端可以使用路由器的 Socks 服务。"
 
 msgid "Filter Mode"
 msgstr "过滤模式"
@@ -157,12 +151,6 @@ msgstr "不过滤"
 msgid "Custom DNS"
 msgstr "自定义DNS"
 
-msgid "IP:Port mode ecceptable for specify other filtered name services."
-msgstr "定义接受 IP:Port 形式的输入，以指定其它域名服务的过滤服务。"
-
-msgid "Local DNS"
-msgstr "本地DNS"
-
 msgid "Remote DNS"
 msgstr "远程DNS"
 
@@ -171,27 +159,6 @@ msgstr "接受 IP:Port 形式的输入，多个以英文逗号分隔。"
 
 msgid "If you use dns2socks, only the first one is valid."
 msgstr "如果使用dns2socks，只有第一个生效。"
-
-msgid "When the selection is not the default, this DNS is forced to be set to dnsmasq upstream DNS."
-msgstr "当选择的不是默认，则将此DNS强制设置为dnsmasq上游DNS。"
-
-msgid "When custom, Please follow the format strictly:"
-msgstr "当自定义时，请严格遵循以下格式："
-
-msgid "Use ChinaDNS-NG"
-msgstr "使用ChinaDNS-NG"
-
-msgid "When checked, forced to be set to dnsmasq upstream DNS."
-msgstr "当勾选，则将强制设置为dnsmasq上游DNS。"
-
-msgid "Use ChinaList"
-msgstr "使用chnlist"
-
-msgid "Only useful in non-gfwlist mode."
-msgstr "仅可用于非防火墙表。"
-
-msgid "When used, the domestic DNS will be used only when the chnlist rule is hit, and the domain name that misses the rule will be resolved by remote DNS."
-msgstr "当使用时，只有当命中chnlist规则时，才会使用国内DNS，未命中规则的域名将会使用远程DNS解析。"
 
 msgid "Ali"
 msgstr "阿里"
@@ -205,9 +172,6 @@ msgstr "解析被代理的域名列表"
 msgid "Requery DNS By %s"
 msgstr "通过%s请求DNS"
 
-msgid "Forward To Socks Server"
-msgstr "转发至 Socks 服务器"
-
 msgid "Socks Server"
 msgstr "Socks服务器"
 
@@ -217,20 +181,11 @@ msgstr "配置不当"
 msgid "Make sure socks service is available on this address."
 msgstr "请确保此Socks服务可用。"
 
-msgid "ChinaDNS-NG Fair Mode"
-msgstr "ChinaDNS-NG 公平模式"
-
 msgid "Format must be:"
 msgstr "格式必须为："
 
 msgid "DoH request address"
 msgstr "DoH 请求地址"
-
-msgid "DoH bootstrap DNS"
-msgstr "DoH Bootstrap DNS"
-
-msgid "The Bootstrap DNS server is used to resolve the IP address of the DoH resolver you specify as the upstream."
-msgstr "Bootstrap DNS 服务器用于解析您指定为上游的 DoH 解析器的 IP 地址。"
 
 msgid "China list or gfwlist cannot be used together with outside China list!"
 msgstr "中国列表不能和中国列表外或防火墙表一起使用！"
@@ -238,8 +193,8 @@ msgstr "中国列表不能和中国列表外或防火墙表一起使用！"
 msgid "Cache Resolved"
 msgstr "缓存解析结果"
 
-msgid "Dnsmasq default dns"
-msgstr "Dnsmasq的默认DNS"
+msgid "Query Strategy"
+msgstr "查询策略"
 
 msgid "When the accessed domain name does not exist in the rule list, the default DNS used."
 msgstr "当访问的域名不存在规则列表中，使用的默认DNS。"
@@ -292,12 +247,6 @@ msgstr "不指定"
 msgid "custom"
 msgstr "自定义"
 
-msgid "Multi Process Option"
-msgstr "多进程并发"
-
-msgid "you can start SS/SSR with multiple process"
-msgstr "当使用SS/SSR时可使用多进程并发"
-
 msgid "Process"
 msgstr "进程"
 
@@ -320,7 +269,7 @@ msgid "Global Proxy"
 msgstr "全局代理"
 
 msgid "GFW List"
-msgstr "防火墙表"
+msgstr "GFW列表"
 
 msgid "Not China List"
 msgstr "中国列表以外"
@@ -442,17 +391,20 @@ msgstr "直连"
 msgid "Blackhole"
 msgstr "黑洞"
 
-msgid "Use the default node for the transit."
-msgstr "使用默认节点代理转发。"
+msgid "Default Preproxy"
+msgstr "默认前置代理"
 
 msgid "No shunt rules? Click me to go to add."
 msgstr "没有分流规则？点我前往去添加。"
 
-msgid "Use this node proxy to forward the default node."
-msgstr "使用此节点代理转发默认节点。"
+msgid "When using, localhost will connect this node first and then use this node to connect the default node."
+msgstr "当使用时，本机将首先连接到此节点，然后再使用此节点连接到默认节点落地。"
 
 msgid "Domain Strategy"
 msgstr "域名解析策略"
+
+msgid "Domain matcher"
+msgstr "域名匹配算法"
 
 msgid "'AsIs': Only use domain for routing. Default value."
 msgstr "AsIs：只使用域名进行路由选择。默认值。"
@@ -910,8 +862,8 @@ msgstr "订阅备注（机场）"
 msgid "Subscribe URL"
 msgstr "订阅网址"
 
-msgid "Please input the subscription url first, save and submit before updating. If you subscribe to update, it is recommended to delete all subscriptions and then re-subscribe."
-msgstr "请输入订阅网址保存应用后再更新，如果订阅节点更新了，建议删除所有订阅，然后重新订阅。"
+msgid "Please input the subscription url first, save and submit before manual subscription."
+msgstr "请输入订阅网址保存应用后再手动订阅。"
 
 msgid "Subscribe via proxy"
 msgstr "通过代理订阅"
@@ -928,6 +880,12 @@ msgstr "删除所有订阅节点"
 msgid "Delete the subscribed node"
 msgstr "删除已订阅的节点"
 
+msgid "Manual subscription All"
+msgstr "手动订阅全部"
+
+msgid "This remark already exists, please change a new remark."
+msgstr "此备注已存在，请改一个新的备注。"
+
 msgid "Filter keyword Mode"
 msgstr "过滤关键字模式"
 
@@ -936,6 +894,12 @@ msgstr "丢弃列表"
 
 msgid "Keep List"
 msgstr "保留列表"
+
+msgid "Use global config"
+msgstr "使用全局配置"
+
+msgid "User-Agent"
+msgstr "用户代理(User-Agent)"
 
 msgid "Add"
 msgstr "添加"
@@ -958,6 +922,12 @@ msgstr "代理列表"
 msgid "Block List"
 msgstr "屏蔽列表"
 
+msgid "Lan Ip List"
+msgstr "局域网IP列表"
+
+msgid "Route Hosts"
+msgstr "路由Hosts文件"
+
 msgid "Join the direct hosts list of domain names will not proxy."
 msgstr "加入的域名不走代理，对所有模式有效。且优先级最高。"
 
@@ -972,6 +942,15 @@ msgstr "加入的IP段将走代理。可输入IP地址或地址段，如：35.24
 
 msgid "These had been joined websites will be block. Please input the domain names of websites, every line can input only one website domain. For example: twitter.com."
 msgstr "加入的域名将屏蔽。输入网站域名，如：twitter.com，每个地址段一行。"
+
+msgid "The list is the IPv4 LAN IP list, which represents the direct connection IP of the LAN. If you need the LAN IP in the proxy list, please clear it from the list. Do not modify this list by default."
+msgstr "列表中为IPv4的局域网IP列表，代表局域网直连IP。如果需要代理列表中的局域网IP，请将其在该列表中清除,并将其添加到代理列表中。默认情况下不要修改这个列表。"
+
+msgid "The list is the IPv6 LAN IP list, which represents the direct connection IP of the LAN. If you need the LAN IP in the proxy list, please clear it from the list. Do not modify this list by default."
+msgstr "列表中为IPv6的局域网IP列表，代表局域网直连IP。如果需要代理列表中的局域网IP，请将其在该列表中清除,并将其添加到代理列表中。默认情况下不要修改这个列表。"
+
+msgid "Configure routing etc/hosts file, if you don't know what you are doing, please don't change the content."
+msgstr "配置路由etc/hosts文件，如果你不知道自己在做什么，请不要改动内容。"
 
 msgid "These had been joined ip addresses will be block. Please input the ip address or ip address segment, every line can input only one ip address."
 msgstr "加入的IP段将屏蔽。可输入IP地址或地址段，每个地址段一行。"
@@ -1063,12 +1042,6 @@ msgstr "插件名称"
 msgid "Plugin Arguments"
 msgstr "插件参数"
 
-msgid "Proxy IPv6"
-msgstr "代理IPv6"
-
-msgid "The IPv6 traffic can be proxyed when selected"
-msgstr "选中后可以代理IPv6流量"
-
 msgid "Use Kcptun"
 msgstr "使用Kcptun"
 
@@ -1120,6 +1093,9 @@ msgstr "是否启入传输层加密，支持的选项有 \"none\" 表示不加�
 msgid "Original Trojan only supported 'tls', please choose 'tls'."
 msgstr "原版Trojan只支持'tls'，请选择'tls'。"
 
+msgid "Transfer mode"
+msgstr "传输模式"
+
 msgid "Domain"
 msgstr "域名"
 
@@ -1168,7 +1144,7 @@ msgstr "目前最多只能设置%s个节点，用于给访问控制使用。"
 msgid "IPv6 TProxy"
 msgstr "IPv6透明代理(TProxy)"
 
-msgid "Experimental feature.Make sure that your node supports IPv6."
+msgid "Experimental feature. Make sure that your node supports IPv6."
 msgstr "实验特性，请确保你的节点支持IPv6"
 
 msgid "Status info"
@@ -1314,3 +1290,27 @@ msgstr "客户端文件不适合当前设备。"
 
 msgid "Can't move new file to path: %s"
 msgstr "无法移动新文件到：%s"
+
+msgid "Mux concurrency"
+msgstr "最大并发连接数"
+
+msgid "Mux idle timeout"
+msgstr "最大闲置时间"
+
+msgid "Enable early data"
+msgstr "启用前置数据"
+
+msgid "Early data length"
+msgstr "前置数据最大长度"
+
+msgid "Health check"
+msgstr "健康检查"
+
+msgid "Idle timeout"
+msgstr "闲置时间"
+
+msgid "Health check timeout"
+msgstr "检查超时时间"
+
+msgid "Permit without stream"
+msgstr "无子连接时的健康检查"

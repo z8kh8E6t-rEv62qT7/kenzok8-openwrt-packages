@@ -6,11 +6,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=adguardhome
-PKG_VERSION:=0.107.0-b.11
+PKG_VERSION:=0.107.0-b.14
 PKG_RELEASE:=
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_VERSION:=fea76816dffa8f576c3cd814c967d2f77675877b
+PKG_SOURCE_VERSION:=c0b14b481103b915c9200b3aea0cf9b5910d2248
 PKG_SOURCE_URL:=https://github.com/AdguardTeam/AdGuardHome
 PKG_MIRROR_HASH:=skip
 
@@ -22,9 +22,7 @@ PKG_BUILD_DEPENDS:=golang/host node/host node-yarn/host packr/host
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
 
-PKG_CONFIG_DEPENDS:= \
-	CONFIG_ADGUARDHOME_COMPRESS_GOPROXY \
-	CONFIG_ADGUARDHOME_COMPRESS_UPX
+PKG_CONFIG_DEPENDS:=CONFIG_ADGUARDHOME_COMPRESS_GOPROXY
 
 GO_PKG:=github.com/AdguardTeam/AdGuardHome
 GO_PKG_BUILD_PKG:=github.com/AdguardTeam/AdGuardHome
@@ -32,7 +30,7 @@ GO_PKG_BUILD_PKG:=github.com/AdguardTeam/AdGuardHome
 AGH_BUILD_TIME:=$(shell date -d @$(SOURCE_DATE_EPOCH) +%FT%TZ%z)
 AGH_VERSION_PKG:=github.com/AdguardTeam/AdGuardHome/internal/version
 GO_PKG_LDFLAGS_X:=$(AGH_VERSION_PKG).channel=release \
-	$(AGH_VERSION_PKG).version=$(PKG_SOURCE_VERSION) \
+	$(AGH_VERSION_PKG).version=v$(PKG_VERSION) \
 	$(AGH_VERSION_PKG).buildtime=$(AGH_BUILD_TIME) \
 	$(AGH_VERSION_PKG).goarm=$(GO_ARM) \
 	$(AGH_VERSION_PKG).gomips=$(GO_MIPS)
@@ -65,10 +63,6 @@ define Package/$(PKG_NAME)/config
 config ADGUARDHOME_COMPRESS_GOPROXY
 	bool "Compiling with GOPROXY proxy"
 	default n
-
-config ADGUARDHOME_COMPRESS_UPX
-	bool "Compress executable files with UPX"
-	default n
 endef
 
 ifeq ($(CONFIG_ADGUARDHOME_COMPRESS_GOPROXY),y)
@@ -84,9 +78,6 @@ define Build/Compile
 		popd ; \
 		$(call GoPackage/Build/Compile) ; \
 	)
-ifeq ($(CONFIG_ADGUARDHOME_COMPRESS_UPX),y)
-	$(STAGING_DIR_HOST)/bin/upx --lzma --best $(GO_PKG_BUILD_BIN_DIR)/AdGuardHome
-endif
 endef
 
 #define Package/adguardhome/install

@@ -38,6 +38,7 @@ function index()
 	entry({"admin", "services", appname, "app_update"}, cbi(appname .. "/client/app_update"), _("App Update"), 95).leaf = true
 	entry({"admin", "services", appname, "rule"}, cbi(appname .. "/client/rule"), _("Rule Manage"), 96).leaf = true
 	entry({"admin", "services", appname, "rule_list"}, cbi(appname .. "/client/rule_list"), _("Rule List Manage"), 97).leaf = true
+	entry({"admin", "services", appname, "node_subscribe_config"}, cbi(appname .. "/client/node_subscribe_config")).leaf = true
 	entry({"admin", "services", appname, "node_config"}, cbi(appname .. "/client/node_config")).leaf = true
 	entry({"admin", "services", appname, "shunt_rules"}, cbi(appname .. "/client/shunt_rules")).leaf = true
 	entry({"admin", "services", appname, "acl"}, cbi(appname .. "/client/acl"), _("Access control"), 98).leaf = true
@@ -61,6 +62,7 @@ function index()
 	entry({"admin", "services", appname, "get_log"}, call("get_log")).leaf = true
 	entry({"admin", "services", appname, "clear_log"}, call("clear_log")).leaf = true
 	entry({"admin", "services", appname, "status"}, call("status")).leaf = true
+	entry({"admin", "services", appname, "haproxy_status"}, call("haproxy_status")).leaf = true
 	entry({"admin", "services", appname, "socks_status"}, call("socks_status")).leaf = true
 	entry({"admin", "services", appname, "connect_status"}, call("connect_status")).leaf = true
 	entry({"admin", "services", appname, "check_port"}, call("check_port")).leaf = true
@@ -140,11 +142,11 @@ end
 
 function get_now_use_node()
 	local e = {}
-	local data, code, msg = nixio.fs.readfile("/var/etc/passwall/id/TCP")
+	local data, code, msg = nixio.fs.readfile("/tmp/etc/passwall/id/TCP")
 	if data then
 		e["TCP"] = util.trim(data)
 	end
-	local data, code, msg = nixio.fs.readfile("/var/etc/passwall/id/UDP")
+	local data, code, msg = nixio.fs.readfile("/tmp/etc/passwall/id/UDP")
 	if data then
 		e["UDP"] = util.trim(data)
 	end
@@ -155,11 +157,11 @@ end
 function get_redir_log()
 	local proto = luci.http.formvalue("proto")
 	proto = proto:upper()
-	if proto == "UDP" and (ucic:get(appname, "@global[0]", "udp_node") or "nil") == "tcp" and not nixio.fs.access("/var/etc/passwall/" .. proto .. ".log") then
+	if proto == "UDP" and (ucic:get(appname, "@global[0]", "udp_node") or "nil") == "tcp" and not nixio.fs.access("/tmp/etc/passwall/" .. proto .. ".log") then
 		proto = "TCP"
 	end
-	if nixio.fs.access("/var/etc/passwall/" .. proto .. ".log") then
-		local content = luci.sys.exec("cat /var/etc/passwall/" .. proto .. ".log")
+	if nixio.fs.access("/tmp/etc/passwall/" .. proto .. ".log") then
+		local content = luci.sys.exec("cat /tmp/etc/passwall/" .. proto .. ".log")
 		content = content:gsub("\n", "<br />")
 		luci.http.write(content)
 	else
@@ -168,12 +170,12 @@ function get_redir_log()
 end
 
 function get_log()
-	-- luci.sys.exec("[ -f /var/log/passwall.log ] && sed '1!G;h;$!d' /var/log/passwall.log > /var/log/passwall_show.log")
-	luci.http.write(luci.sys.exec("[ -f '/var/log/passwall.log' ] && cat /var/log/passwall.log"))
+	-- luci.sys.exec("[ -f /tmp/log/passwall.log ] && sed '1!G;h;$!d' /tmp/log/passwall.log > /tmp/log/passwall_show.log")
+	luci.http.write(luci.sys.exec("[ -f '/tmp/log/passwall.log' ] && cat /tmp/log/passwall.log"))
 end
 
 function clear_log()
-	luci.sys.call("echo '' > /var/log/passwall.log")
+	luci.sys.call("echo '' > /tmp/log/passwall.log")
 end
 
 function status()
@@ -181,14 +183,19 @@ function status()
 	local e = {}
 	e.dns_mode_status = luci.sys.call("netstat -apn | grep ':7913 ' >/dev/null") == 0
 	e.haproxy_status = luci.sys.call(string.format("top -bn1 | grep -v grep | grep '%s/bin/' | grep haproxy >/dev/null", appname)) == 0
-	e["kcptun_tcp_node_status"] = luci.sys.call(string.format("top -bn1 | grep -v -E 'grep|acl/|acl_' | grep '%s/bin/kcptun' | grep -i 'tcp' >/dev/null", appname)) == 0
-	e["tcp_node_status"] = luci.sys.call(string.format("top -bn1 | grep -v -E 'grep|kcptun|acl/|acl_' | grep '%s/bin/' | grep -i 'TCP' >/dev/null", appname)) == 0
+	e["tcp_node_status"] = luci.sys.call(string.format("top -bn1 | grep -v -E 'grep|acl/|acl_' | grep '%s/bin/' | grep -i 'TCP' >/dev/null", appname)) == 0
 
 	if (ucic:get(appname, "@global[0]", "udp_node") or "nil") == "tcp" then
 		e["udp_node_status"] = e["tcp_node_status"]
 	else
 		e["udp_node_status"] = luci.sys.call(string.format("top -bn1 | grep -v -E 'grep|acl/|acl_' | grep '%s/bin/' | grep -i 'UDP' >/dev/null", appname)) == 0
 	end
+	luci.http.prepare_content("application/json")
+	luci.http.write_json(e)
+end
+
+function haproxy_status()
+	local e = luci.sys.call(string.format("top -bn1 | grep -v grep | grep '%s/bin/' | grep haproxy >/dev/null", appname)) == 0
 	luci.http.prepare_content("application/json")
 	luci.http.write_json(e)
 end
@@ -385,8 +392,8 @@ end
 
 function server_user_log()
 	local id = luci.http.formvalue("id")
-	if nixio.fs.access("/var/etc/passwall_server/" .. id .. ".log") then
-		local content = luci.sys.exec("cat /var/etc/passwall_server/" .. id .. ".log")
+	if nixio.fs.access("/tmp/etc/passwall_server/" .. id .. ".log") then
+		local content = luci.sys.exec("cat /tmp/etc/passwall_server/" .. id .. ".log")
 		content = content:gsub("\n", "<br />")
 		luci.http.write(content)
 	else
@@ -395,11 +402,11 @@ function server_user_log()
 end
 
 function server_get_log()
-	luci.http.write(luci.sys.exec("[ -f '/var/log/passwall_server.log' ] && cat /var/log/passwall_server.log"))
+	luci.http.write(luci.sys.exec("[ -f '/tmp/log/passwall_server.log' ] && cat /tmp/log/passwall_server.log"))
 end
 
 function server_clear_log()
-	luci.sys.call("echo '' > /var/log/passwall_server.log")
+	luci.sys.call("echo '' > /tmp/log/passwall_server.log")
 end
 
 function kcptun_check()
